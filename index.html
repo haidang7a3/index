@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>HaiDwng Phantom | Facebook Reporter + OLM Hacker Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0b0f1a;
+            color: #eef5ff;
+            line-height: 1.5;
+            overflow-x: hidden;
+            cursor: default;
+        }
+
+        /* Particle canvas background */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        .badge {
+            display: inline-block;
+            background: rgba(16,185,129,0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(16,185,129,0.4);
+            border-radius: 100px;
+            padding: 0.4rem 1.2rem;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 1px;
+        }
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            max-width: 650px;
+            margin: 0 auto;
+        }
+
+        /* Grid */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .card {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            border: 1px solid rgba(16,185,129,0.25);
+            padding: 2rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(16,185,129,0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+        .card:hover::before {
+            opacity: 1;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            border-color: #10b981;
+            box-shadow: 0 25px 40px -15px rgba(16,185,129,0.3);
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 1rem;
+        }
+        .card-icon {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #10b981, #34d399);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .feature-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+        .feature-list li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            font-size: 0.95rem;
+        }
+        .feature-list i {
+            color: #10b981;
+            width: 1.4rem;
+            font-size: 1rem;
+        }
+        .tag-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.6rem;
+            margin: 1.5rem 0 1rem;
+        }
+        .tag {
+            background: rgba(16,185,129,0.12);
+            border: 1px solid rgba(16,185,129,0.3);
+            border-radius: 100px;
+            padding: 0.25rem 0.9rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+        }
+        .btn-demo {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: linear-gradient(90deg, #10b981, #059669);
+            border: none;
+            border-radius: 40px;
+            padding: 0.7rem 1.4rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-top: 1rem;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        .btn-demo:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 18px rgba(16,185,129,0.5);
+        }
+
+        /* Contact section */
+        .contact-section {
+            margin-top: 3rem;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(16px);
+            border-radius: 2rem;
+            border: 1px solid rgba(16,185,129,0.3);
+            padding: 2rem;
+            text-align: center;
+        }
+        .contact-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 1.2rem;
+            margin-top: 1rem;
+        }
+        .contact-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.6rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 40px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
+        .zalo-btn {
+            background: #0066cc;
+            color: white;
+        }
+        .zalo-btn:hover {
+            background: #0055aa;
+            transform: scale(1.02);
+        }
+        .github-link {
+            margin-top: 1.2rem;
+            font-size: 0.85rem;
+        }
+        .github-link a {
+            color: #10b981;
+            text-decoration: none;
+        }
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        @media (max-width: 850px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<canvas id="particleCanvas"></canvas>
+
+<div class="container">
+    <div class="header">
+        <div class="badge"><i class="fas fa-shield-alt"></i> HaiDwng Phantom 2026</div>
+        <h1>Tool tự động<br><span style="background: linear-gradient(135deg, #10b981, #60a5fa); -webkit-background-clip: text; background-clip: text; color: transparent;">Facebook Report + OLM Hack</span></h1>
+        <p class="subtitle">Tự động báo cáo Facebook hàng loạt · Hack mọi bài kiểm tra OLM · Tích hợp AI thông minh</p>
+    </div>
+
+    <div class="grid">
+        <!-- Facebook Reporter Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fab fa-facebook-f card-icon"></i>
+                <span class="card-title">Phantom Anchor</span>
+            </div>
+            <p style="margin-bottom: 1rem; color: #cbd5e1;">Công cụ báo cáo Facebook tự động với hệ thống key, broadcast, blacklist, bảo trì toàn cầu.</p>
+            <ul class="feature-list">
+                <li><i class="fas fa-check-circle"></i> Báo cáo tự động 15+ lý do (spam, thù ghét, ảnh nude…)</li>
+                <li><i class="fas fa-key"></i> Quản lý key kích hoạt, chặn thiết bị khi share key</li>
+                <li><i class="fas fa-broadcast-tower"></i> Broadcast tin nhắn đến tất cả client</li>
+                <li><i class="fas fa-ban"></i> Blacklist IP / Device toàn cục</li>
+                <li><i class="fas fa-tools"></i> Bảo trì toàn cầu realtime</li>
+                <li><i class="fas fa-language"></i> Đa ngôn ngữ (VI, EN, JP)</li>
+            </ul>
+            <div class="tag-group">
+                <span class="tag">Auto report</span>
+                <span class="tag">Key activation</span>
+                <span class="tag">Broadcast</span>
+                <span class="tag">Blacklist</span>
+                <span class="tag">Maintenance</span>
+                <span class="tag">Multi-language</span>
+            </div>
+            <a href="https://github.com/haidwng11/reportfb/blob/main/reportfbhaidwng(facebook)" target="_blank" class="btn-demo"><i class="fab fa-github"></i> Tải script Facebook</a>
+        </div>
+
+        <!-- OLM Hacker Card -->
+        <div class="card">
+            <div class="card-header">
+                <i class="fas fa-graduation-cap card-icon"></i>
+                <span class="card-title">OLM Hacker Pro</span>
+            </div>
+            <p style="margin-bottom: 1rem; color: #cbd5e1;">Tool hack toàn diện mọi dạng bài trên OLM, giải mã đáp án, tự động nộp bài.</p>
+            <ul class="feature-list">
+                <li><i class="fas fa-table"></i> <strong>Bảng đáp án</strong> – Hiển thị đáp án trực tiếp, kéo thả, resize</li>
+                <li><i class="fas fa-rocket"></i> <strong>Làm bài nhanh</strong> – Tự động nộp bài với thời gian tùy chỉnh</li>
+                <li><i class="fas fa-file-word"></i> <strong>Xuất File Word</strong> – Tải đề + đáp án (.docx) chỉ 1 click</li>
+                <li><i class="fas fa-eye-slash"></i> <strong>Chống phát hiện thoát tab</strong> – Fake visibility</li>
+                <li><i class="fas fa-mouse-pointer"></i> <strong>Mở khóa chuột phải / Inspect</strong> – Vô hiệu hóa chặn</li>
+                <li><i class="fas fa-copy"></i> <strong>Mở khóa copy/paste</strong> – Thoải mái sao chép đề</li>
+                <li><i class="fas fa-expand"></i> <strong>Chặn fullscreen bắt buộc</strong> – Không bị ép full màn hình</li>
+            </ul>
+            <div class="tag-group">
+                <span class="tag">Trắc nghiệm</span>
+                <span class="tag">Điền từ</span>
+                <span class="tag">Đúng/Sai</span>
+                <span class="tag">Sắp xếp</span>
+                <span class="tag">Gạch chân</span>
+                <span class="tag">Xuất Word</span>
+                <span class="tag">Anti-tab out</span>
+            </div>
+            <a href="https://github.com/haidwng11/olm/blob/main/olmhaidwng(olm)" target="_blank" class="btn-demo"><i class="fab fa-github"></i> Tải script OLM</a>
+        </div>
+    </div>
+
+    <!-- Key + Contact -->
+    <div class="contact-section">
+        <div style="display: inline-block; background: #10b981; color: #0f172a; font-weight: 700; padding: 0.3rem 1.2rem; border-radius: 100px; font-size: 0.8rem; margin-bottom: 1rem;">
+            <i class="fas fa-key"></i> MỘT KEY – HAI TOOL
+        </div>
+        <h3 style="font-size: 1.4rem; margin-bottom: 0.5rem;">Key kích hoạt dùng chung</h3>
+        <p style="color: #cbd5e1; margin-bottom: 1.2rem;">Chỉ cần 1 key duy nhất, kích hoạt được cả <strong>Phantom Anchor (Facebook)</strong> và <strong>OLM Hacker Pro</strong>. Không giới hạn thiết bị, bảo hành trọn đời.</p>
+        <div class="contact-buttons">
+            <a href="https://zalo.me/0935763789" target="_blank" class="contact-btn zalo-btn"><i class="fab fa-facebook-messenger"></i> Liên hệ Zalo: 0935763789</a>
+        </div>
+        <div class="github-link">
+            <i class="fab fa-github"></i> GitHub: <a href="https://github.com/haidwng11" target="_blank">haidwng11</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p><i class="fas fa-skull"></i> HaiDwng Phantom – Phát triển bởi HaiDwng | Dùng cho mục đích học tập & nghiên cứu</p>
+        <p style="margin-top: 0.5rem;">Báo lỗi / Hỗ trợ: Zalo 0935763789</p>
+    </div>
+</div>
+
+<script>
+    // Particle background
+    const canvas = document.getElementById('particleCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let particles = [];
+
+    function resizeCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    function createParticles() {
+        particles = [];
+        const count = Math.min(150, Math.floor(width * height / 8000));
+        for (let i = 0; i < count; i++) {
+            particles.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 2 + 1,
+                speedX: (Math.random() - 0.5) * 0.4,
+                speedY: (Math.random() - 0.5) * 0.4,
+                color: `rgba(16, 185, 129, ${Math.random() * 0.3 + 0.1})`
+            });
+        }
+    }
+
+    function drawParticles() {
+        ctx.clearRect(0, 0, width, height);
+        for (let p of particles) {
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.fill();
+            p.x += p.speedX;
+            p.y += p.speedY;
+            if (p.x < 0) p.x = width;
+            if (p.x > width) p.x = 0;
+            if (p.y < 0) p.y = height;
+            if (p.y > height) p.y = 0;
+        }
+        requestAnimationFrame(drawParticles);
+    }
+
+    window.addEventListener('resize', () => {
+        resizeCanvas();
+        createParticles();
+    });
+    resizeCanvas();
+    createParticles();
+    drawParticles();
+
+    // Card hover effect for radial gradient
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = ((e.clientX - rect.left) / rect.width) * 100;
+            const y = ((e.clientY - rect.top) / rect.height) * 100;
+            card.style.setProperty('--x', `${x}%`);
+            card.style.setProperty('--y', `${y}%`);
+        });
+    });
+</script>
+</body>
+</html>
